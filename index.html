@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta content="text/html; charset=windows-1200" http-equiv="content-type">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>touchscreen</title>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
@@ -33,22 +34,30 @@
 
         //Get the current MH mode using a JSON call
         $.getJSON(url, function (data) {
-          var m, modestable = '<table id="modesTable" style="width: 100%;"><tbody>';
+          var m, modestable;
+
           var mode = data.objects.mode_occupied.state;
           var modes = data.objects.mode_occupied.states;
           var count = Object.keys(modes).length;
+
+          modestable = '<table id="modesTable" style="width: 100%" data-transition="fade"><tbody>';
           modestable += '<tr><td colspan="' + (count - 1) + '" rowspan="1" align="center">';
-          modestable += '<img src="images/icons/' + mode + '_mode.png" alt="current mode" /></td></tr>';
+          modestable += '<img src="images/icons/' + mode + '_mode.png" alt="Current mode" width="230" height="230" />';
+          modestable += '</td></tr>';
+
           modestable += '<tr>';
+          
           for (var i = 0;i < count; i++) {
             if (modes[i] != mode) {
-              modestable += '<td align="center"><img src="images/icons/' + modes[i] + '_mode.png" alt="' + modes[i] + ' mode" /></td>';
+              modestable += '<td align="center">';
+              modestable += '<img src="images/icons/' + modes[i] + '_mode.png" alt="' + modes[i] + ' mode" width="170" height="170">';
+              modestable += '</td>';
             }
           }
-          modestable += '</tr></tbody></table>';
+          modestable += '</tr>';
+          modestable += '</tbody></table>';
 
           $('#modesList').html(modestable);
-          //$('#currentMode').html('<img src="images/icons/' + mode + '_mode.png" alt="current mode" />');
         });
       }
       
@@ -80,7 +89,7 @@
       </div>
       <!-- /content -->
       <div data-role="footer" class="footer" data-theme="c">
-        <span class="helper"></span><img alt="power" src="images/icons/power_32.png">
+        <span class="helper"></span><a href="javascript:GoPage('main_menu');" id="home_btn">&nbsp;</a>
       </div>
       <!-- /footer --> </div>
     <!-- /page -->

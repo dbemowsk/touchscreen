@@ -2,6 +2,13 @@ body {
   margin: 0;
   padding: 0;
 }
+a {
+  text-decoration: none;
+}
+.ui-btn {
+  border: none !important;
+  height: auto !important;;
+}
 .page {
   width: 100%;
   height: 100%;
@@ -17,6 +24,18 @@ body {
   color: white;
   background: url('../images/footer_bkgnd_36.png') repeat;
 }
+#header_right {
+  float: right;
+}
+#header_right img {
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+}
+#content {
+  color: white;
+  font-size: 1.5em;
+}
 .footer {
   position: absolute;
   height: 48px;
@@ -28,16 +47,9 @@ body {
   bottom: 0;
   background: url('../images/footer_bkgnd_48.png') repeat;
 }
-.footer img {
-  vertical-align: middle;
-}
-#header_right {
-  float: right;
-}
-#header_right img {
-  vertical-align: middle;
-  margin: 0;
-  padding: 0;
+.footer a {
+  width: 32px;
+  height: 32px;
 }
 #dateTime {
   position: relative;
@@ -57,4 +69,14 @@ table {
   display: inline-block;
   height: 100%;
   vertical-align: middle;
+}
+#power_btn {
+  background: transparent url('../images/icons/power_32.png') no-repeat;
+  height: 32px;
+  width: 32px;
+}
+#home_btn {
+  background: transparent url('../images/icons/home_small.png') no-repeat;
+  height: 32px;
+  width: 32px;
 }
