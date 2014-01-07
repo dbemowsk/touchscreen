@@ -7,7 +7,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-image: url('./images/backgrounds/purple_black_1.png');
+  background-image: url('../images/backgrounds/purple_black_1.png');
 }
 .header {
   width: 100%;
@@ -15,7 +15,7 @@ body {
   border: 0;
   font-size: 1.25em;
   color: white;
-  background: url('./images/footer_bkgnd_36.png') repeat;
+  background: url('../images/footer_bkgnd_36.png') repeat;
 }
 .footer {
   position: absolute;
@@ -26,7 +26,7 @@ body {
   color: white;
   left: 0;
   bottom: 0;
-  background: url('./images/footer_bkgnd_48.png') repeat;
+  background: url('../images/footer_bkgnd_48.png') repeat;
 }
 .footer img {
   vertical-align: middle;
@@ -47,7 +47,7 @@ body {
   margin: 0;
   padding: 0;
   vertical-align: middle;
-  background: url('./images/black_button_center.png') repeat;
+  background: url('../images/black_button_center.png') repeat;
 }
 table {
   width: 100%;
