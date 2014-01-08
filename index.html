@@ -2,85 +2,23 @@
 <html>
   <head>
     <meta content="text/html; charset=windows-1200" http-equiv="content-type">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>touchscreen</title>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>touchscreen</title>
+
+    <!-- Javascript -->
     <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="js/jquery.mobile-1.4.0.js"></script>
-    <script type="text/javascript">
-      var curr_page = (typeof curr_page == 'undefined') ? "main_menu" : curr_page;
-      
-      window.setInterval(ShowTime, 1000);
-      
-      $(document).ready(function() {
-        LoadPage(curr_page);
-      });
-      
-      function LoadPage(page_name) {
-        $('#content').load('./' + page_name + '.html');
-      }
-      
-      function ShowTime() {
-        $("#dateTime").html(formatAMPM());
-      }
-      
-      function GoPage(page_name) {
-        curr_page = page_name;
-        LoadPage(page_name);
-      }
-      
-      function GetMhMode() {
-        var url = './sub?json(objects=mode_occupied)';
+    <script type="text/javascript" src="js/main.js"></script>
 
-        //Get the current MH mode using a JSON call
-        $.getJSON(url, function (data) {
-          var m, modestable;
-
-          var mode = data.objects.mode_occupied.state;
-          var modes = data.objects.mode_occupied.states;
-          var count = Object.keys(modes).length;
-
-          modestable = '<table id="modesTable" style="width: 100%" data-transition="fade"><tbody>';
-          modestable += '<tr><td colspan="' + (count - 1) + '" rowspan="1" align="center">';
-          modestable += '<img src="images/icons/' + mode + '_mode.png" alt="Current mode" width="230" height="230" />';
-          modestable += '</td></tr>';
-
-          modestable += '<tr>';
-          
-          for (var i = 0;i < count; i++) {
-            if (modes[i] != mode) {
-              modestable += '<td align="center">';
-              modestable += '<img src="images/icons/' + modes[i] + '_mode.png" alt="' + modes[i] + ' mode" width="170" height="170">';
-              modestable += '</td>';
-            }
-          }
-          modestable += '</tr>';
-          modestable += '</tbody></table>';
-
-          $('#modesList').html(modestable);
-        });
-      }
-      
-      function formatAMPM() {
-        var d = new Date(),
-        minutes = d.getMinutes().toString().length == 1 ? '0'+d.getMinutes() : d.getMinutes(),
-        hours = d.getHours() > 12 ? d.getHours() - 12 : d.getHours(),
-        ampm = d.getHours() >= 12 ? 'pm' : 'am',
-        months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-        days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        
-        return days[d.getDay()]+' '+months[d.getMonth()]+' '+d.getDate()+' '+d.getFullYear()+' '+hours+':'+minutes+ampm;
-      }
-    </script>
-
+    <!-- CSS -->
     <link rel="stylesheet" href="css/jquery.mobile-1.4.0.css">
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
     <div data-role="page" class="page" data-theme="c">
-      <div data-role="header" class="header"><span class="helper"></span>
-        <div id="header_right"><img alt="button left cap" src="images/black_button_left.png"><span
-            id="dateTime">&nbsp;</span><img alt="button left cap" src="images/black_button_right.png">
+      <div data-role="header" class="header"><span id="hdrMode">&nbsp;</span><span class="helper"></span>
+        <div id="header_right">
+          <span id="hdrDateTime">&nbsp;</span>
         </div>
       </div>
       <!-- /header -->
