@@ -63,6 +63,24 @@ table {
   width: 100%;
   height: 100%;
 }
+#navtable {
+  margin: 10px;
+  text-align: justify; /* spread them evenly */
+  display: inline-block;
+  vertical-align: middle;
+}
+.menu_btn {
+  margin: 5px;
+  height: calc((100% - 80px) /2);
+  width: (calc(100% / 4)) - 1px; /* because we have 8 menu items and we want 2 rows when landscaped */
+  display: inline-block;
+}
+#navtable:after {
+  content: ' ';
+  display: inline-block;
+  width: 100%;
+  height: 0;
+}
 .helper {
   display: inline-block;
   height: 100%;
@@ -77,4 +95,19 @@ table {
   background: transparent url('../images/icons/home_small.png') no-repeat;
   height: 32px;
   width: 32px;
+}
+/* For the climate page  */
+.split {
+  display: inline-block;
+  float: left;
+  width: 50%;
+  height: 100%;
+  overflow: auto;
+}
+.center {
+  text-align: center;
+}
+.largeText {
+  font-size: 2.75em;
+  font-weight: bold;
 }

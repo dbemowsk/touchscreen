@@ -44,6 +44,75 @@ function GoPage(page_name) {
 }
 
 //******************************************************************************
+// This function takes a temperature value and returns a hex rgb color value
+// that relates to that temperature.  Colder values return cooler colors in the  
+// blue spectrum, and hotter values return warmer colors in the red spectrum. 
+//
+// @arg temp - The temperature value to convert
+// @arg fc - farenheit or celsius
+//******************************************************************************
+function Temp2RGB(temp, fc) {
+  //Convert to farenheit if necessary
+  temp = (fc == "C" || fc == "c") ? ((temp * 9 / 5) + 32) : temp;
+  
+  var RGB = '#000034';
+  if (temp > 99) { RGB = '#670001'; } else
+  if (temp > 91.5) { RGB = '#800000'; } else
+  if (temp > 83.1) { RGB = '#990002'; } else
+  if (temp > 74.6) { RGB = '#c22009'; } else
+  if (temp > 66.1) { RGB = '#ee540e'; } else
+  if (temp > 57.7) { RGB = '#fdca00'; } else
+  if (temp > 49.2) { RGB = '#fcff68'; } else
+  if (temp > 40.8) { RGB = '#fefefe'; } else
+  if (temp > 32.3) { RGB = '#99cdff'; } else
+  if (temp > 23.8) { RGB = '#3c9dd2'; } else
+  if (temp > 15.4) { RGB = '#0066cb'; } else
+  if (temp > 6.9) { RGB = '#003466'; } else
+  if (temp > -1.5) { RGB = '#003466'; } 
+  
+  return RGB;
+}
+
+//******************************************************************************
+// This function gathers the weather data and displays it on the right half of 
+// the climate page.
+//
+//******************************************************************************
+function updateWeather() {
+  var url = './sub?json(weather)';
+  var out = '';
+
+  //get the weather data
+  $.getJSON(url, function (data) {
+    //we will get the US (F) or metric (C) value from the Summary_Short 
+    var fc = data.Weather.Summary_Short.match(/^\d*\.?\d*?deg\;(F|C)/);
+
+    //Now loop through the weather data
+    $.each(data.Weather, function(key, value) {
+      //check if we have a page element to update
+      var el = $('#' + key);
+      out += "["+key+"] = "+value+"\n";
+      if (el.length > 0) {
+        value = (value == "null") ? "?" : value;
+        if (key.match(/^Temp/)) {
+          el.html(value + "&deg; F");
+          el.css('color', Temp2RGB(value, fc));
+        } else if (key.match(/^Conditions/)) {
+          el.css('height', '276px');
+          //if the returned condition text contains spaces, replace them with underscores
+          value = value.replace(/ /, "_");
+          el.css('background-image', 'url(images/weather/' + value + '.png)');
+          el.css('background-size', '256px 256px');
+          el.css('background-repeat', 'no-repeat');
+          el.css('background-position', 'center 20px');
+        }
+      }
+    });
+    //alert(out)
+  });
+}
+
+//******************************************************************************
 // This function is used to set the state of an  object in MisterHouse. If we 
 // are setting the system mode (mode_occupied), then refresh the header icon for
 // it after setting it. I am using an HTTP GET request as MH returns log 
@@ -54,13 +123,13 @@ function GoPage(page_name) {
 // @arg state - the state to change it to
 //******************************************************************************
 function MhSet(obj, state) {
-  var url='./set?$' + obj + '=' + state;
+  var url='./set;Referrer?$' + obj + '=' + state;
   $.get(url, function (data) {
     //alert(data);
     if (obj == "mode_occupied") {
       GetMhMode("page");
     }
-	});
+  });
 }
 
 //******************************************************************************
