@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <table class="navtable" border="0">
+      <tbody>
+        <tr>
+          <td align="center"><a href="javascript:GoPage('system_mode');"><img alt="System mode" src="images/icons/system_mode.png"
+            valign="middle" height="200" width="200"></a></td>
+          <td align="center"><a href="javascript:GoPage('lights_and_devices');"><img alt="Lights &amp; devices" src="images/icons/lights_and_devices.png"
+              valign="middle" height="200" width="200"></a></td>
+          <td align="center"><a href="javascript:GoPage('tv_and_movies');"><img alt="TV &amp; movies" src="images/icons/tv_and_movies.png"
+              valign="middle" height="200" width="200"></a></td>
+          <td align="center"><a href="javascript:GoPage('music_and_radio');"><img alt="Music &amp; radio" src="images/icons/music_and_radio.png"
+              valign="middle" height="200" width="200"></a></td>
+        </tr>
+        <tr>
+          <td align="center"><a href="javascript:GoPage('security');"><img alt="Security" src="images/icons/security.png"
+              valign="middle" height="200" width="200"></a></td>
+          <td align="center"><a href="javascript:GoPage('climate');"><img alt="Climate" src="images/icons/climate.png" valign="middle"
+              height="200" width="200"></a></td>
+          <td align="center"><a href="javascript:GoPage('scenes_and_moods');"><img alt="Scenes &amp; moods" src="images/icons/scenes_and_moods.png"
+              valign="middle" height="200" width="200"></a></td>
+          <td align="center"><a href="javascript:GoPage('settings');"><img alt="Settings" src="images/icons/settings.png"
+              valign="middle" height="200" width="200"></a></td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </body>
+</html>
