@@ -31,6 +31,7 @@ a {
   vertical-align: middle;
 }
 #content {
+  height: calc(100% - 84px); /* we need to take off the height of the header and footer */
   color: white;
   font-size: 1.5em;
 }
@@ -96,7 +97,6 @@ table {
   height: 32px;
   width: 32px;
 }
-/* For the climate page  */
 .split {
   display: inline-block;
   float: left;
@@ -107,7 +107,26 @@ table {
 .center {
   text-align: center;
 }
+.textLeft {
+  text-align: left:
+}
+.clear {
+  clear: both;
+}
+.fullHeight {
+  height: 100%;
+}
+.fullWidth {
+  width: 100%;
+}
 .largeText {
   font-size: 2.75em;
+  font-weight: bold;
+}
+.hide {
+  display: none;
+}
+.valName {
+  color: #44FFAA;
   font-weight: bold;
 }

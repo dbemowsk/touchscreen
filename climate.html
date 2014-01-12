@@ -6,13 +6,29 @@
   </head>
   <body>
     <div class="split">
-      Thermostat controls.
+      Thermostat controls will eventually go here.
     </div>
-    <div class="split">
+    <div id="Conditions"  class="split fullHeight">
       <script type='text/javascript'>updateWeather();</script>
-      <div id="Conditions">
-      <div class="center split">Outside<br /><span id="TempOutdoor" class="largeText">&nbsp;</span></div>
-      <div class="center split">Inside<br /><span id="TempIndoor" class="largeText">&nbsp;</span></div>
+      <div>
+        <div class="center split">Outside<br />
+          <span id="TempOutdoor" class="largeText">&nbsp;</span>
+        </div>
+        <div class="center split">Inside<br />
+          <span id="TempIndoor" class="largeText">&nbsp;</span>
+        </div>
+        <div id="WindChillData">
+          <span class="valName">Wind Chill: </span><span id="WindChill">&nbsp;</span>
+        </div>
+        <div id="WindData" class="clear textLeft">
+          <span class="valName">Winds: </span><span id="Wind">&nbsp;</span> 
+        </div>
+        <div id="HumidityData">
+          <span class="valName">Humidity: </span><span id="HumidOutdoor">&nbsp;</span>
+        </div>
+        <div id="BarometerData">
+          <span class="valName">Barometer: </span><span id="BaromSea">&nbsp;</span>
+        </div>
       </div>
     </div>
   </body>

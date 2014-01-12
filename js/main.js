@@ -6,6 +6,46 @@ window.setInterval(ShowTime, 1000);
 //Update the MisterHouse mode icon in the upper left corner every minute
 window.setInterval(function() { GetMhMode('header'); }, 60000);
 
+//Send the device back to the main menu page after 10 minutes of inactivity
+var IDLE_TIMEOUT = 300; //seconds
+var _idleSeconds = 0;
+
+//Reset the idle counter on any mouse click, mouse movement or keypress events
+document.onclick = function() {
+    _idleSeconds = 0;
+};
+document.onmousemove = function() {
+    _idleSeconds = 0;
+};
+document.onkeypress = function() {
+    _idleSeconds = 0;
+};
+//Check the idle time every second
+window.setInterval(CheckIdleTime, 1000);
+
+//******************************************************************************
+// This function is the handler for the idle time counter. This gets run once 
+// per second. It increments the idle counter and checks the counter against 
+// the IDLE_TIMEOUT value and sends the user back to the main menu (if the user
+// is not already there) after the timer runs out.  It also lets you use an 
+// element "SecondsUntilExpire" 
+// timer expires
+//******************************************************************************
+function CheckIdleTime() {
+    _idleSeconds++;
+    var oPanel = $("#SecondsUntilExpire");
+    if (oPanel)
+        oPanel.html((IDLE_TIMEOUT - _idleSeconds) + "");
+    if (_idleSeconds >= IDLE_TIMEOUT) {
+        //No need to go to the main_menu page if we are already there
+        if (curr_page != "main_menu") {
+        	GoPage('main_menu');
+        }
+        //Reset the counter
+        _idleSeconds = 0;
+    }
+}
+
 //******************************************************************************
 // This function is the jquery .ready function. Here we load the initial page 
 // and get the current system mode icon and display it in the header
@@ -79,13 +119,20 @@ function Temp2RGB(temp, fc) {
 //
 //******************************************************************************
 function updateWeather() {
+  //Get updated weather information every 30 seconds
+  window.setTimeout(updateWeather, 30000);
+
   var url = './sub?json(weather)';
   var out = '';
+  var cloudImg = "";
 
   //get the weather data
   $.getJSON(url, function (data) {
     //we will get the US (F) or metric (C) value from the Summary_Short 
-    var fc = data.Weather.Summary_Short.match(/^\d*\.?\d*?deg\;(F|C)/);
+    var fc = data.Weather.Summary_Short.match(/^\d*\.?\d*?deg\;(F|C)/)[1];
+
+    //We should not use the "Clouds" value if we have a "Condition" value set
+    var conditionIsSet = false;
 
     //Now loop through the weather data
     $.each(data.Weather, function(key, value) {
@@ -94,22 +141,41 @@ function updateWeather() {
       out += "["+key+"] = "+value+"\n";
       if (el.length > 0) {
         value = (value == "null") ? "?" : value;
-        if (key.match(/^Temp/)) {
-          el.html(value + "&deg; F");
+        if (key.match(/^Temp/) || key.match(/^WindChill$/)) {
+          el.html(value + "&deg; " + fc);
           el.css('color', Temp2RGB(value, fc));
-        } else if (key.match(/^Conditions/)) {
-          el.css('height', '276px');
+        } else if (key.match(/^Conditions$/)) {
           //if the returned condition text contains spaces, replace them with underscores
           value = value.replace(/ /, "_");
-          el.css('background-image', 'url(images/weather/' + value + '.png)');
-          el.css('background-size', '256px 256px');
-          el.css('background-repeat', 'no-repeat');
-          el.css('background-position', 'center 20px');
+          SetWeatherImage(key,value);
+          conditionIsSet = true;
+        } else if (key.match(/^HumidOutdoor$/)) {
+          el.html(value + " %");
+        } else if (key.match(/^BaromSea$/)) {
+          el.html(value + " inches and " + data.Weather.BaromDelta);
+        } else {
+          el.html(value);
         }
       }
+      if (key.match(/^Clouds/)) {
+          cloudImg = value.replace(/ /, "_");
+          cloudEle = key;
+        }
     });
-    //alert(out)
+
+    //If all is done and there is not a condition image being displayed, display a clouds image if one exists
+    if (!conditionIsSet && cloudImg != "") {
+       SetWeatherImage(cloudEle,cloudImg);
+    } 
   });
+}
+
+function SetWeatherImage(el,value) {
+  el = $('#Conditions');
+  el.css('background-image', 'url(./images/weather/' + value + '.png)');
+  el.css('background-size', '256px 256px');
+  el.css('background-repeat', 'no-repeat');
+  el.css('background-position', 'center 20px');
 }
 
 //******************************************************************************
