@@ -5,29 +5,78 @@
     <title></title>
   </head>
   <body>
-    <div class="split">
-      Thermostat controls will eventually go here.
+    <script type='text/javascript'>startSpinner();</script>
+    <div class="split section_wrapper">
+      <div class="section">
+        <div class="spinControl">
+          <div id="sb1_label"> </div>
+          <div class="spinbutton_wrapper">
+            <div class="spLabel">Heating Setpoint</div>
+            <div id="sb1" class="spinbutton heat" role="spinbutton"
+                      aria-labelledby="sb1_label"
+                      aria-valuemin="50"
+                      aria-valuemax="99"
+                      aria-valuenow="70"
+                      tabindex="0">
+              70
+            </div>
+          </div>
+          <div class="button_wrapper">
+            <div id="sb1_up" class="button">
+              <img src="images/up_button.png" role="presentation" alt="Increase value">
+            </div>
+            <div id="sb1_down" class="button">
+              <img src="images/down_button.png" role="presentation" alt="Decrease value">
+            </div>
+          </div>
+          <div class="spinbutton_wrapper">
+            <div class="spLabel">Cooling Setpoint</div>
+            <div id="sb2" class="spinbutton cool" role="spinbutton"
+                      aria-labelledby="sb2_label"
+                      aria-valuemin="50"
+                      aria-valuemax="99"
+                      aria-valuenow="80"
+                      tabindex="0">
+              80
+            </div>
+          </div>
+          <div class="button_wrapper">
+            <div id="sb2_up" class="button">
+              <img src="images/up_button.png" role="presentation" alt="Increase value">  
+            </div>
+            <div id="sb2_down" class="button">
+              <img src="images/down_button.png" role="presentation" alt="Decrease value">  
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="selector_wrapper">
+        <div id="mode_select" class="selector">Heat</div>
+        <div id="fan_select" class="selector">Auto</div>
+      </div>
     </div>
-    <div id="Conditions"  class="split fullHeight">
-      <script type='text/javascript'>updateWeather();</script>
-      <div>
-        <div class="center split">Outside<br />
-          <span id="TempOutdoor" class="largeText">&nbsp;</span>
-        </div>
-        <div class="center split">Inside<br />
-          <span id="TempIndoor" class="largeText">&nbsp;</span>
-        </div>
-        <div id="WindChillData">
-          <span class="valName">Wind Chill: </span><span id="WindChill">&nbsp;</span>
-        </div>
-        <div id="WindData" class="clear textLeft">
-          <span class="valName">Winds: </span><span id="Wind">&nbsp;</span> 
-        </div>
-        <div id="HumidityData">
-          <span class="valName">Humidity: </span><span id="HumidOutdoor">&nbsp;</span>
-        </div>
-        <div id="BarometerData">
-          <span class="valName">Barometer: </span><span id="BaromSea">&nbsp;</span>
+    <div id="Conditions"  class="split section_wrapper">
+      <div class="section">
+        <script type='text/javascript'>updateWeather();</script>
+        <div>
+          <div class="center split">Outside<br />
+            <span id="TempOutdoor" class="largeText highlighted">&nbsp;</span>
+          </div>
+          <div class="center split">Inside<br />
+            <span id="TempIndoor" class="largeText highlighted">&nbsp;</span>
+          </div>
+          <div id="WindChillData">
+            <span class="valName">Wind Chill: </span><span id="WindChill" class="bold highlighted">&nbsp;</span>
+          </div>
+          <div id="WindData" class="clear textLeft">
+            <span class="valName">Winds: </span><span id="Wind">&nbsp;</span> 
+          </div>
+          <div id="HumidityData">
+            <span class="valName">Humidity: </span><span id="HumidOutdoor">&nbsp;</span>
+          </div>
+          <div id="BarometerData">
+            <span class="valName">Barometer: </span><span id="BaromSea">&nbsp;</span>
+          </div>
         </div>
       </div>
     </div>

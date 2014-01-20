@@ -8,17 +8,22 @@
     <!-- Javascript -->
     <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="js/jquery.mobile-1.4.0.js"></script>
+    <script type="text/javascript" src="js/spinner1.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/jquery.mobile-1.4.0.css">
+    <link rel="stylesheet" href="css/spinner1.css">
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
     <div data-role="page" class="page" data-theme="c">
-      <div data-role="header" class="header"><span id="hdrMode">&nbsp;</span><span class="helper"></span>
-        <div id="header_right">
-          <span id="hdrDateTime">&nbsp;</span>
+      <div data-role="header" id="headerWrapper">
+        <div id="header">
+          <span id="hdrMode">&nbsp;</span><span class="helper"></span>
+          <div id="header_right">
+            <span id="hdrDateTime">&nbsp;</span>
+          </div>
         </div>
       </div>
       <!-- /header -->
@@ -26,8 +31,12 @@
         &nbsp;
       </div>
       <!-- /content -->
-      <div data-role="footer" class="footer" data-theme="c">
-        <span class="helper"></span><a href="javascript:GoPage('main_menu');" id="home_btn">&nbsp;</a>
+      <div data-role="footer" id="footerWrapper" data-theme="c">
+        <div id="footer">
+          <span class="helper"></span>
+          <a href="javascript:GoPage('main_menu');" ><div id="home_btn">&nbsp;</div></a>
+          <span id="SecondsUntilExpire">&nbsp;</span>
+        </div>
       </div>
       <!-- /footer --> </div>
     <!-- /page -->

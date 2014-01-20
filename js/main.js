@@ -1,8 +1,5 @@
 var curr_page = (typeof curr_page == 'undefined') ? "main_menu" : curr_page;
 
-//Update the time in the upper right corner every second
-window.setInterval(ShowTime, 1000);
-
 //Update the MisterHouse mode icon in the upper left corner every minute
 window.setInterval(function() { GetMhMode('header'); }, 60000);
 
@@ -20,7 +17,7 @@ document.onmousemove = function() {
 document.onkeypress = function() {
     _idleSeconds = 0;
 };
-//Check the idle time every second
+//Check the idle time and update the time in the upper right corner every second
 window.setInterval(CheckIdleTime, 1000);
 
 //******************************************************************************
@@ -28,8 +25,7 @@ window.setInterval(CheckIdleTime, 1000);
 // per second. It increments the idle counter and checks the counter against 
 // the IDLE_TIMEOUT value and sends the user back to the main menu (if the user
 // is not already there) after the timer runs out.  It also lets you use an 
-// element "SecondsUntilExpire" 
-// timer expires
+// element "SecondsUntilExpire" to show the timer count on the screen
 //******************************************************************************
 function CheckIdleTime() {
     _idleSeconds++;
@@ -44,6 +40,7 @@ function CheckIdleTime() {
         //Reset the counter
         _idleSeconds = 0;
     }
+    ShowTime();
 }
 
 //******************************************************************************
@@ -129,7 +126,7 @@ function updateWeather() {
   //get the weather data
   $.getJSON(url, function (data) {
     //we will get the US (F) or metric (C) value from the Summary_Short 
-    var fc = data.Weather.Summary_Short.match(/^\d*\.?\d*?deg\;(F|C)/)[1];
+    var fc = data.Weather.Summary_Short.match(/^-?\d*\.?\d*?deg\;(F|C)/)[1];
 
     //We should not use the "Clouds" value if we have a "Condition" value set
     var conditionIsSet = false;
