@@ -1,8 +1,12 @@
-This is the MisterHouse touch screen interface web pages for controlling misterhouse.  This is being designed for cheap tablets to be 
+This is the MisterHouse touch screen interface web pages for controlling MisterHouse.  This is being designed for cheap tablets to be 
 used as wall mounted touch screen interfaces.  Since it is being designed for use on a tablet, I have decided to use jquery mobile for easier 
 control.
 
-Any input to improve this project is appreciated.
+Thanks go out to the efforts of Sean Mathewss.  He has worked out a way of communicating between MisterHouse and the touch screen 
+interface using web sockets.  His code can be found at https://github.com/f34rdotcom/misterhouse/compare/websockets.  This is proving 
+to be a very clean approach to things.
+
+Any other input to improve this project is greatly appreciated.
 
 Author: Dan Bemowski
 Email : dbemowsk [at] phpwebscripting [dot] com

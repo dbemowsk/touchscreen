@@ -1,5 +1,38 @@
-//This code was adapted from http://test.cita.illinois.edu/aria/spinner/spinner1.php#lsc
+// This code was adapted from http://test.cita.illinois.edu/aria/spinner/spinner1.php#lsc
 
+// Give us a timer value to work with
+setpointTimer = 0;
+// Defines the number of seconds of idle time after button presses before the thermostat is updated
+spTimeout = 4;
+// Defines a boolean flag to use to determine when buttons have been pressed
+buttonPressFlag = false;
+
+// Update the timer every second and check if it timed out
+window.setInterval(SetpointTimeout, 1000);
+
+//
+// Function SetpointTimeout() is a handler for checking if we time out after button presses. 
+// @return N/A
+//
+function SetpointTimeout() {
+  //only operate if buttons have been pressed
+  if (buttonPressFlag) {
+    setpointTimer ++;
+  
+    if (setpointTimer > spTimeout) {
+      
+      // Reset the button press flag
+      buttonPressFlag = false;
+    }
+  }
+}
+
+function startSpinner() {
+  var spin1 = new spinbutton('sb1', 'sb1_up', 'sb1_down', 1);
+  var spin2 = new spinbutton('sb2', 'sb2_up', 'sb2_down', 1);
+}
+
+//
 // Function spinbutton() is a constructor for an ARIA spinbutton widget. The widget
 // binds to an element with role='spinbutton'.
 //
@@ -10,11 +43,9 @@
 // @param (downID string) downID is the html id of the spinbutton control's decrease value button
 //
 // @param (skipVal integer) skipVal is the amount to change the control by for pgUp/pgDown
-//
-// @param (timeoutFunction function) timeoutFunction is the function that will get called after the button pause timeout
 // @return N/A
 //
-function spinbutton(id, upID, downID, skipVal, timeoutFunction) {
+function spinbutton(id, upID, downID, skipVal) {
 
   // define widget attributes
   this.$id = $('#' + id);
@@ -24,18 +55,6 @@ function spinbutton(id, upID, downID, skipVal, timeoutFunction) {
   this.downID = downID;
   this.$downButton = $('#' + downID);
   this.skipVal = skipVal;
-
-  // This defines the button pause timer variables
-  this.pauseCount = 0;
-  this.pauseTimeout = 2;
-  // Defines a flag to tell when buttons were pressed and to check the timeout
-  this.buttonPressFlag = false;
-
-  var thisObj = this;
-  //  Set a timer to run every second to check the button press timeout.
-  window.setInterval(function() { sbPauseTimer(thisObj) }, 1000);
-
-  this.timeoutFunction = timeoutFunction;
 
   this.valMin = parseInt(this.$id.attr('aria-valuemin'));
   this.valMax = parseInt(this.$id.attr('aria-valuemax'));
@@ -56,28 +75,10 @@ function spinbutton(id, upID, downID, skipVal, timeoutFunction) {
   this.bindHandlers();
 }
 
-var sbPauseTimer = function(obj) {
-  if (obj.buttonPressFlag) {
-    // Increment the pause counter
-    obj.pauseCount ++;
-
-    // Check if the counter timed out
-    if (obj.pauseCount > obj.pauseTimeout) {
-      // Reset the button press flag
-      obj.buttonPressFlag = false;
-alert('Button timed out');
-      // Reset the pause timer
-      obj.pauseCount = 0;
-      
-      obj.timeoutFunction();
-    }
-  }
-}
-
-// Function bindHandlers() is a member function to bind event handlers for the spinbutton control 
-// 
-// @return N/A 
-// 
+// Function bindHandlers() is a member function to bind event handlers for the spinbutton control
+//
+// @return N/A
+//
 spinbutton.prototype.bindHandlers = function() {
 
   var thisObj = this;
@@ -151,16 +152,16 @@ spinbutton.prototype.bindHandlers = function() {
 
 } // end bindHandlers()
 
-// 
-// Function handleClick() is a member function to handle click events for the control 
-// buttons 
-// 
-// @param (e object) e is the event object 
-// 
-// @param ($button object) $button is the jQuery object of the button clicked 
-// 
-// @return (boolean) Returns false 
-// 
+//
+// Function handleClick() is a member function to handle click events for the control
+// buttons
+//
+// @param (e object) e is the event object
+//
+// @param ($button object) $button is the jQuery object of the button clicked
+//
+// @return (boolean) Returns false
+//
 spinbutton.prototype.handleClick = function(e, $button) {
 
 
@@ -187,28 +188,28 @@ spinbutton.prototype.handleClick = function(e, $button) {
 
   // set focus on the spinbutton
   this.$id.focus();
-
+    
   // Set the button press flag
-  this.buttonPressFlag = true;
+  buttonPressFlag = true;
 
-  // Reset the pause timer
-  this.pauseCount = 0;
-alert('Button pressed');
+  // Reset the setpoint timer value to 0
+  setpointTimer = 0;
+
   e.stopPropagation();
   return false;
 
 } // end handleClick()
 
-// 
-// Function handleMouseDown() is a member function to handle mousedown events for the control 
-// buttons 
-// 
-// @param (e object) e is the event object 
-// 
-// @param ($button object) $button is the jQuery object of the button clicked 
-// 
-// @return (boolean) Returns false 
-// 
+//
+// Function handleMouseDown() is a member function to handle mousedown events for the control
+// buttons
+//
+// @param (e object) e is the event object
+//
+// @param ($button object) $button is the jQuery object of the button clicked
+//
+// @return (boolean) Returns false
+//
 spinbutton.prototype.handleMouseDown = function(e, $button) {
 
   var $img = $button.find('img');
@@ -219,22 +220,28 @@ spinbutton.prototype.handleMouseDown = function(e, $button) {
   else {
     $img.attr('src', "images/down_button_pressed.png");
   }
+  // Set the button press flag
+  buttonPressFlag = true;
+
+  // Reset the setpoint timer value to 0
+  setpointTimer = 0;
+
 
   e.stopPropagation();
   return false;
 
 } // end handleMouseDown()
 
-// 
-// Function handleMouseUp() is a member function to handle mouseup events for the control 
-// buttons 
-// 
-// @param (e object) e is the event object 
-// 
-// @param ($button object) $button is the jQuery object of the button clicked 
-// 
-// @return (boolean) Returns false 
-// 
+//
+// Function handleMouseUp() is a member function to handle mouseup events for the control
+// buttons
+//
+// @param (e object) e is the event object
+//
+// @param ($button object) $button is the jQuery object of the button clicked
+//
+// @return (boolean) Returns false
+//
 spinbutton.prototype.handleMouseUp = function(e, $button) {
 
   var $img = $button.find('img');
@@ -251,16 +258,16 @@ spinbutton.prototype.handleMouseUp = function(e, $button) {
 
 } // end handleMouseUp()
 
-// 
-// Function handleMouseEnter() is a member function to handle mouseenter events for the control 
-// buttons 
-// 
-// @param (e object) e is the event object 
-// 
-// @param ($button object) $button is the jQuery object of the button 
-// 
-// @return (boolean) Returns false 
-// 
+//
+// Function handleMouseEnter() is a member function to handle mouseenter events for the control
+// buttons
+//
+// @param (e object) e is the event object
+//
+// @param ($button object) $button is the jQuery object of the button
+//
+// @return (boolean) Returns false
+//
 spinbutton.prototype.handleMouseEnter = function(e, $button) {
 
   var $img = $button.find('img');
@@ -277,16 +284,16 @@ spinbutton.prototype.handleMouseEnter = function(e, $button) {
 
 } // end handleMouseOutEnter()
 
-// 
-// Function handleMouseOut() is a member function to handle mouseout events for the control 
-// buttons 
-// 
-// @param (e object) e is the event object 
-// 
-// @param ($button object) $button is the jQuery object of the button 
-// 
-// @return (boolean) Returns false 
-// 
+//
+// Function handleMouseOut() is a member function to handle mouseout events for the control
+// buttons
+//
+// @param (e object) e is the event object
+//
+// @param ($button object) $button is the jQuery object of the button
+//
+// @return (boolean) Returns false
+//
 spinbutton.prototype.handleMouseOut = function(e, $button) {
 
   var $img = $button.find('img');
@@ -303,13 +310,13 @@ spinbutton.prototype.handleMouseOut = function(e, $button) {
 
 } // end handleMouseOutUp()
 
-// 
-// Function handleKeyDown() is a member function to handle keydown events for the control. 
-// 
-// @param (e object) e is the event object 
-// 
-// @return (boolean) Returns false if consuming; true if propagating 
-// 
+//
+// Function handleKeyDown() is a member function to handle keydown events for the control.
+//
+// @param (e object) e is the event object
+//
+// @return (boolean) Returns false if consuming; true if propagating
+//
 spinbutton.prototype.handleKeyDown = function(e) {
 
   if (e.altKey || e.ctrlKey || e.shiftKey) {
@@ -415,15 +422,15 @@ spinbutton.prototype.handleKeyDown = function(e) {
 
 } // end handleKeyDown()
 
-// 
-// Function handleKeyPress() is a member function to handle keypress events for the control. 
-// This function is required to prevent browser that manipulate the window on keypress (such as Opera) 
-// from performing unwanted scrolling. 
-// 
-// @param (e object) e is the event object 
-// 
-// @return (boolean) Returns false if consuming; true if propagating 
-// 
+//
+// Function handleKeyPress() is a member function to handle keypress events for the control.
+// This function is required to prevent browser that manipulate the window on keypress (such as Opera)
+// from performing unwanted scrolling.
+//
+// @param (e object) e is the event object
+//
+// @return (boolean) Returns false if consuming; true if propagating
+//
 spinbutton.prototype.handleKeyPress = function(e) {
 
   if (e.altKey || e.ctrlKey || e.shiftKey) {
@@ -449,13 +456,13 @@ spinbutton.prototype.handleKeyPress = function(e) {
 
 } // end handleKeyPress()
 
-// 
-// Function handleFocus() is a member function to handle focus events for the control. 
-// 
-// @param (e object) e is the event object 
-// 
-// @return (boolean) Returns true 
-// 
+//
+// Function handleFocus() is a member function to handle focus events for the control.
+//
+// @param (e object) e is the event object
+//
+// @return (boolean) Returns true
+//
 spinbutton.prototype.handleFocus = function(e) {
 
   // add the focus styling class to the control
@@ -465,13 +472,13 @@ spinbutton.prototype.handleFocus = function(e) {
 
 } // end handleFocus()
 
-// 
-// Function handleBlur() is a member function to handle blur events for the control. 
-// 
-// @param (e object) e is the event object 
-// 
-// @return (boolean) Returns true 
-// 
+//
+// Function handleBlur() is a member function to handle blur events for the control.
+//
+// @param (e object) e is the event object
+//
+// @return (boolean) Returns true
+//
 spinbutton.prototype.handleBlur = function(e) {
 
   // Remove the focus styling class from the control
