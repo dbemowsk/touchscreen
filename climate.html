@@ -3,9 +3,10 @@
   <head>
     <meta content="text/html; charset=windows-1252" http-equiv="content-type">
     <title></title>
+    <script type="text/javascript" src="js/spinner1.js"></script>
+    <script type="text/javascript" src="js/climate.js"></script>
   </head>
   <body>
-    <script type='text/javascript'>startSpinner();</script>
     <div class="split section_wrapper">
       <div class="section">
         <div class="spinControl">
@@ -16,9 +17,9 @@
                       aria-labelledby="sb1_label"
                       aria-valuemin="50"
                       aria-valuemax="99"
-                      aria-valuenow="70"
+                      aria-valuenow=""
                       tabindex="0">
-              70
+              &nbsp;
             </div>
           </div>
           <div class="button_wrapper">
@@ -35,9 +36,9 @@
                       aria-labelledby="sb2_label"
                       aria-valuemin="50"
                       aria-valuemax="99"
-                      aria-valuenow="80"
+                      aria-valuenow=""
                       tabindex="0">
-              80
+              &nbsp;
             </div>
           </div>
           <div class="button_wrapper">
@@ -51,8 +52,8 @@
         </div>
       </div>
       <div class="selector_wrapper">
-        <div id="mode_select" class="selector">Heat</div>
-        <div id="fan_select" class="selector">Auto</div>
+        <div id="mode_select" class="selector"><span id="mode_select_val">Heat</span><div id="mode_state">&nbsp;</div></div>
+        <div id="fan_select" class="selector"><span id="fan_select_val">Auto</span><div id="fan_state">&nbsp;</div></div>
       </div>
     </div>
     <div id="Conditions"  class="split section_wrapper">
