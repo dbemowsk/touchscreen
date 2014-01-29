@@ -179,7 +179,7 @@ a {
   background: transparent url('../images/hot_off_cold_leds.png') no-repeat;
   width: 32px;
   height: 32px;
-  background-position: 0 -64px;
+  background-position: 0 -32px;
 }
 #fan_state {
   display: inline-block;
@@ -188,5 +188,5 @@ a {
   background: transparent url('../images/green_led_on_off.png') no-repeat;
   width: 32px;
   height: 32px;
-  background-position: 0 -32px;
+  background-position: 0 0;
 }

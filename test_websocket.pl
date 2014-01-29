@@ -80,10 +80,12 @@ if ($thermostat) {
   use vars qw($therm_last_mode);
   use vars qw($therm_last_fan);
   use vars qw($therm_last_state);
+  use vars qw($therm_last_fan_state);
   
   my $therm_check_mode;
   my $therm_check_fan;
   my $therm_check_state;
+  my $therm_check_fan_state;
   
   if ($Startup or $Reload) {
     $therm_last_mode = "unknown";
@@ -94,6 +96,7 @@ if ($thermostat) {
     $therm_check_mode = therm_get_mode();
     $therm_check_fan = therm_get_fan_mode();
     $therm_check_state = therm_get_state();
+    $therm_check_fan_state = therm_get_fan_state();
 
     # check if a mode change ocurred
     if ($therm_check_mode ne $therm_last_mode) {
@@ -106,9 +109,23 @@ if ($thermostat) {
       &::print_log("Notify all WebSockets that the thermostats fan mode has changed");
       WebSocket::SendToAll("THERM_FAN:" . $therm_check_fan);
     }
-    
-    # save the last known mode
+
+    #check and update the HVAC system's heating and cooling state as it changes
+    if ($therm_last_state ne $therm_check_state) {
+      &::print_log("Notify all WebSockets that the HVAC system is now in a $therm_check_state state");
+      WebSocket::SendToAll("THERM_STATE:" . $therm_check_state);
+    }
+
+    #Check and update the HVAC fan state as it changes
+    if ($therm_last_fan_state ne $therm_check_fan_state) {
+      &::print_log("Notify all WebSockets that the HVAC system's fan is now $therm_check_fan_state");
+      WebSocket::SendToAll("THERM_FAN_STATE:" . $therm_check_fan_state);
+    }
+
+    # save the last known modes and states
     $therm_last_mode = $therm_check_mode;
     $therm_last_fan = $therm_check_fan;
+    $therm_last_state = $therm_check_state;
+    $therm_last_fan_state = $therm_check_fan_state;
   }
 }

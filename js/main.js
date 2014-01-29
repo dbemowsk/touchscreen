@@ -6,17 +6,21 @@ var IDLE_TIMEOUT = 300; //seconds
 var _idleSeconds = 0;
 
 //Reset the idle counter on any mouse click, mouse movement or keypress events
-document.onclick = function() {
+$(document).on('click', function() {
     _idleSeconds = 0;
-};
+});
 
-document.onmousemove = function() {
+$(document).on('mousemove', function() {
     _idleSeconds = 0;
-};
+});
 
-document.onkeypress = function() {
+$(document).on('keypress', function() {
     _idleSeconds = 0;
-};
+});
+
+$(document).on('tap', function() {
+    _idleSeconds = 0;
+});
 
 //Check the idle time and update the time in the upper right corner every second
 window.setInterval(CheckIdleTime, 1000);
@@ -39,7 +43,7 @@ function CheckIdleTime() {
     if (_idleSeconds >= IDLE_TIMEOUT) {
         //No need to go to the main_menu page if we are already there
         if (curr_page != "main_menu") {
-        	GoPage('main_menu');
+        	//GoPage('main_menu');
         }
         //Reset the counter
         _idleSeconds = 0;
@@ -245,6 +249,35 @@ function initWebSocket()
           val.text(states[therm_fan[1]]);
           alert("Fan mode changed to " + states[therm_fan[1]]);
         }
+      }
+    }
+
+    //check for a thermostat state event
+    if(therm_state = /^THERM_STATE:(.*)/.exec(evt.data)) {
+      if (mode_state = $('#mode_state')) {
+        switch (therm_state[1]) {
+          case "off":
+            var offset = '-32';
+            break;
+          case "heat":
+            var offset = '0';
+            break;
+          case "cool":
+            var offset = '-64';
+            break;
+        }
+        mode_state.css('background-position', '0 ' + offset + 'px');
+      }
+    }
+
+    //check for a thermostat state event
+    if(therm_fan_state = /^THERM_FAN_STATE:(.*)/.exec(evt.data)) {
+      if (mode_fan = $('#fan_state')) {
+        var offset = '0';
+        if (therm_fan_state[1] == 'on') {
+          offset = '-32';
+        }
+        mode_fan.css('background-position', '0 ' + offset + 'px');
       }
     }
   };

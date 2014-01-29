@@ -123,6 +123,26 @@ function updateThermInfo() {
   $('#mode_select_val').html(states[mode]);
   });
 
+  url = './sub?json(subs=therm_get_state)';
+  
+  //Get the current HVAC state
+  $.getJSON(url, function (data) {
+    state = data.subs.therm_get_state;
+
+    switch (state) {
+      case "off":
+        var offset = '-32';
+        break;
+      case "heat":
+        var offset = '0';
+        break;
+      case "cool":
+        var offset = '-64';
+        break;
+    }
+    $('#mode_state').css('background-position', '0 ' + offset + 'px');
+  });
+
   url = './sub?json(subs=therm_get_fan_mode)';
 
   //Get the current fan mode
@@ -130,6 +150,19 @@ function updateThermInfo() {
     mode = data.subs.therm_get_fan_mode;  
   
     $('#fan_select_val').html(states[mode]);
+  });
+
+  url = './sub?json(subs=therm_get_fan_state)';
+
+  //Get the current fan state
+  $.getJSON(url, function (data) {
+    state = data.subs.therm_get_fan_state;
+
+    var offset = '0';
+    if (state == 'on') {
+      offset = '-32';
+    }
+    $('#fan_state').css('background-position', '0 ' + offset + 'px');
   });
 
   url = './sub?json(subs=therm_get_heat_setpoint)';
@@ -190,9 +223,18 @@ function updateWeather() {
   //Get updated weather information every 30 seconds
   window.setTimeout(updateWeather, 30000);
 
-  var url = './sub?json(weather)';
+  var timeOfDay;
+  var weatherImage;
+  var url = './sub?json(vars=Time_Of_Day)';
+  
+  $.getJSON(url, function (data) {
+    timeOfDay = data.vars.Time_Of_Day;
+  });
+
   var out = '';
   var cloudImg = "";
+
+  url = './sub?json(weather)';
 
   //get the weather data
   $.getJSON(url, function (data) {
@@ -215,7 +257,8 @@ function updateWeather() {
         } else if (key.match(/^Conditions$/)) {
           //if the returned condition text contains spaces, replace them with underscores
           value = value.replace(/ /, "_");
-          SetWeatherImage(key,value);
+          weatherImage = value;
+          cloudEle = key;
           conditionIsSet = true;
         } else if (key.match(/^HumidOutdoor$/)) {
           el.html(value + " %");
@@ -225,15 +268,15 @@ function updateWeather() {
           el.html(value);
         }
       }
-      if (key.match(/^Clouds/)) {
-          cloudImg = value.replace(/ /, "_");
+      if (!conditionIsSet && key.match(/^Clouds/)) {
+          weatherImage = value.replace(/ /, "_");
           cloudEle = key;
         }
     });
 
-    //If all is done and there is not a condition image being displayed, display a clouds image if one exists
-    if (!conditionIsSet && cloudImg != "") {
-     SetWeatherImage(cloudEle,cloudImg);
+    //If all is done and there is a weather image, display its coresponding time of day image
+    if (weatherImage != "") {
+     SetWeatherImage(cloudEle,timeOfDay + "_" + weatherImage);
     } 
   });
 }

@@ -64,6 +64,11 @@ sub therm_get_state {
   return $thermostat->get_system_state();
 }
 
+# This routine gets the current state of the HVAC systems fan
+sub therm_get_fan_state {
+  return $thermostat->get_fan_state();
+}
+
 # This routine is to set the thermostats setback mode to 'on', or 'off'
 sub therm_setback_mode {
   my ($state) = @_;
