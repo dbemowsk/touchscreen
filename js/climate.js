@@ -172,11 +172,11 @@ function updateThermInfo() {
     hsp = data.subs.therm_get_heat_setpoint;
   
     //Update the spinner's valuenow and set the displayed heating setpoint  
-    $('#sb1').attr('aria-valuenow', hsp);
-    $('#sb1').html(hsp);
+    $('#hsp').attr('aria-valuenow', hsp);
+    $('#hsp').html(hsp);
     //Once we update the values we need to start the spinbutton controls
     if (typeof spin1 != 'object') {
-      var spin1 = new spinbutton('sb1', 'sb1_up', 'sb1_down', 1, function() {
+      var spin1 = new spinbutton('hsp', 'hsp_up', 'hsp_down', 1, function() {
         //Here we need to send the heating setpoint value to MH
         var msg = {
           type: "click",
@@ -196,11 +196,11 @@ function updateThermInfo() {
     csp = data.subs.therm_get_cool_setpoint;
 
     //Update the spinner's valuenow and set the displayed heating setpoint
-    $('#sb2').attr('aria-valuenow', csp);  
-    $('#sb2').html(csp);
+    $('#csp').attr('aria-valuenow', csp);  
+    $('#csp').html(csp);
     //Once we update the values we need to start the spinbutton controls
     if (typeof spin2 != 'object') {
-      var spin2 = new spinbutton('sb2', 'sb2_up', 'sb2_down', 1, function() {
+      var spin2 = new spinbutton('csp', 'csp_up', 'csp_down', 1, function() {
         //Here we need to send the cooling setpoint value to MH
         var msg = {
           type: "click",

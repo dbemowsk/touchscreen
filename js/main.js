@@ -232,6 +232,56 @@ function initWebSocket()
        alert("MH just told me it restarted. Is all ok?");
     }
 
+    //check for a thermostat heat set event
+    if(therm_heat_set = /^THERM_HEAT_SET:(.*)/.exec(evt.data)) {
+      if (val = $('#hsp')) {
+        if (val.text() != therm_heat_set[1]) {
+          val.text(therm_heat_set[1]);
+          alert("Heating setpoint changed to " + therm_heat_set[1]);
+        }
+      }
+    }
+
+    //check for a thermostat cool set event
+    if(therm_cool_set = /^THERM_COOL_SET:(.*)/.exec(evt.data)) {
+      if (val = $('#csp')) {
+        if (val.text() != therm_cool_set[1]) {
+          val.text(therm_cool_set[1]);
+          alert("Cooling setpoint changed to " + therm_cool_set[1]);
+        }
+      }
+    }
+
+    //check for a thermostat mode set event
+    if(therm_mode_set = /^THERM_MODE_SET:(.*)/.exec(evt.data)) {
+      if (val = $('#mode_select_val')) {
+        if (val.text() != states[therm_mode_set[1]]) {
+          val.text(states[therm_mode_set[1]]);
+          alert("Mode changed to " + states[therm_mode_set[1]]);
+        }
+      }
+    }
+
+    //check for a thermostat fan set event
+    if(therm_fan_set = /^THERM_FAN_SET:(.*)/.exec(evt.data)) {
+      if (val = $('#fan_select_val')) {
+        if (val.text() != states[therm_fan_set[1]]) {
+          val.text(states[therm_fan_set[1]]);
+          alert("Fan changed to " + states[therm_fan_set[1]]);
+        }
+      }
+    }
+
+    //check for a thermostat temp event
+    if(therm_temp = /^THERM_TEMP:(.*)/.exec(evt.data)) {
+      if (val = $('#TempIndoor')) {
+        if (val.text() != states[therm_temp[1]]) {
+          val.text(states[therm_temp[1]]);
+          alert("Inside temp changed to " + states[therm_temp[1]]);
+        }
+      }
+    }
+
     //check for a thermostat mode event
     if(therm_mode = /^THERM_MODE:(.*)/.exec(evt.data)) {
       if (val = $('#mode_select_val')) {
