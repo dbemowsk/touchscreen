@@ -262,29 +262,81 @@ function updateWeather() {
           conditionIsSet = true;
         } else if (key.match(/^HumidOutdoor$/)) {
           el.html(value + " %");
+          // Now show the block
+          $('#HumidOut').removeClass('hidden');
+        } else if (key.match(/^HumidIndoor$/)) {
+          el.html(value + " %");
+          // Now show the block
+          $('#HumidIn').removeClass('hidden');
         } else if (key.match(/^BaromSea$/)) {
           el.html(value + " inches and " + data.Weather.BaromDelta);
         } else {
           el.html(value);
         }
       }
+
       if (!conditionIsSet && key.match(/^Clouds/)) {
-          weatherImage = value.replace(/ /, "_");
-          cloudEle = key;
-        }
+        weatherImage = value.replace(/ /, "_");
+        cloudEle = key;
+      }
     });
 
     //If all is done and there is a weather image, display its coresponding time of day image
     if (weatherImage != "") {
-     SetWeatherImage(cloudEle,timeOfDay + "_" + weatherImage);
+     SetWeatherImage(cloudEle,timeOfDay, weatherImage);
     } 
   });
 }
+//******************************************************************************
+// This function displays the weather background image using the time of the day
+// and the conditions/clouds data.  It first checks to see if an image based on
+// the time of day and conditions/clouds data exists and uses that if it does.
+// If a time of day image does not exist, it tries to use an image based only on
+// the conditions/clouds data.
+// 
+// @arg el - The element that the image should be added to
+// @arg timeOfDay - Time of the day (morning, afternoon, evening or night)
+// @arg value - The formatted conditions/clouds data
+//
+//******************************************************************************
+function SetWeatherImage(el,timeOfDay, value) {
+  img = './images/weather/' + timeOfDay + '_' + value + '.png';
+  if (!imageExists(img)) {
+    img = './images/weather/' + value + '.png';
+  }
 
-function SetWeatherImage(el,value) {
   el = $('#Conditions');
-  el.css('background-image', 'url(./images/weather/' + value + '.png)');
+  el.css('background-image', 'url(' + img + ')');
   el.css('background-size', '256px 256px');
   el.css('background-repeat', 'no-repeat');
   el.css('background-position', 'center 20px');
+}
+
+//******************************************************************************
+// This function checks to see if an image exists by attempting to load the 
+// image.  If the image loads, the return (rtn) value is set to true.  If an
+// error is encountered, the return value is set to false.
+//
+// @arg src - The image path and filename
+//
+// @return true on load or false on error
+//******************************************************************************
+function imageExists(src) {
+  var img = new Image();
+  var rtn = "";
+
+  img.onload = function() {
+    rtn = true;
+  };
+
+  img.onerror = function() {
+    rtn = false;
+  };
+
+  while(img == "") {
+    //wait for the image to load
+  }
+
+  img.src = src;
+  return rtn;
 }
