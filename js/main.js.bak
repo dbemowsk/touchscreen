@@ -254,52 +254,109 @@ function initWebSocket()
   // connection message event
   $.ts.webSocket.onmessage = function(evt) {
     console.log("WebSocket message: " + evt.data);
-    command = $.parseJSON(evt.data);
+    alert("WebSocket message: " + evt.data);
+    // check for a restart event
+    if(evt.data === "RESTART") {
+       alert("MH just told me it restarted. Is all ok?");
+    }
 
-    // Here we are going to check the command type that was sent.  As of
-    // now, there are 2 command types; "msg" which is just a message to 
-    // be displayed, and "upd" which is an object value to be updated
-    switch (command.type) {
-      case "msg":
-        //Check for common abbreviated messages
-        switch (command.text) {
-          case "RESTART":
-            txt = "MH just told me it restarted. Is all ok?";
-            break;
-
-          // Add other abbreviation case statements here...
-
-          default:
-            // No abbreviations matched.  Just display the text as sent.
-            txt = command.text;
+    //check for a thermostat heat set event
+    if(therm_heat_set = /^THERM_HEAT_SET:(.*)/.exec(evt.data)) {
+      if (val = $('#hsp')) {
+        if (val.text() != therm_heat_set[1]) {
+          val.text(therm_heat_set[1]);
+          alert("Heating setpoint changed to " + therm_heat_set[1]);
         }
+      }
+    }
 
-        // Display the message
-        alert(txt);
+    //check for a thermostat cool set event
+    if(therm_cool_set = /^THERM_COOL_SET:(.*)/.exec(evt.data)) {
+      if (val = $('#csp')) {
+        if (val.text() != therm_cool_set[1]) {
+          val.text(therm_cool_set[1]);
+          alert("Cooling setpoint changed to " + therm_cool_set[1]);
+        }
+      }
+    }
 
-        break;
-      case "upd":
-        obj = $(command.id);
-        
-        switch (command.datatype) {
-          case "text":
-            // Update the object with the specified text.
-            obj.text(command.data);
+    //check for a thermostat mode set event
+    if(therm_mode_set = /^THERM_MODE_SET:(.*)/.exec(evt.data)) {
+      if (val = $('#mode_select_val')) {
+        if (val.text() != states[therm_mode_set[1]]) {
+          val.text(states[therm_mode_set[1]]);
+          alert("Mode changed to " + states[therm_mode_set[1]]);
+        }
+      }
+    }
+
+    //check for a thermostat fan set event
+    if(therm_fan_set = /^THERM_FAN_SET:(.*)/.exec(evt.data)) {
+      if (val = $('#fan_select_val')) {
+        if (val.text() != states[therm_fan_set[1]]) {
+          val.text(states[therm_fan_set[1]]);
+          alert("Fan changed to " + states[therm_fan_set[1]]);
+        }
+      }
+    }
+
+    //check for a thermostat temp event
+    if(therm_temp = /^THERM_TEMP:(.*)/.exec(evt.data)) {
+      if (val = $('#TempIndoor')) {
+        if (val.text() != states[therm_temp[1]]) {
+          val.text(states[therm_temp[1]]);
+          alert("Inside temp changed to " + states[therm_temp[1]]);
+        }
+      }
+    }
+
+    //check for a thermostat mode event
+    if(therm_mode = /^THERM_MODE:(.*)/.exec(evt.data)) {
+      if (val = $('#mode_select_val')) {
+        if (val.text() != states[therm_mode[1]]) {
+          val.text(states[therm_mode[1]]);
+          alert("Mode changed to " + states[therm_mode[1]]);
+        }
+      }
+    }
+
+    //check for a thermostat fan event
+    if(therm_fan = /^THERM_FAN:(.*)/.exec(evt.data)) {
+      if (val = $('#fan_select_val')) {
+        if (val.text() != states[therm_fan[1]]) {
+          val.text(states[therm_fan[1]]);
+          alert("Fan mode changed to " + states[therm_fan[1]]);
+        }
+      }
+    }
+
+    //check for a thermostat state event
+    if(therm_state = /^THERM_STATE:(.*)/.exec(evt.data)) {
+      if (mode_state = $('#mode_state')) {
+        switch (therm_state[1]) {
+          case "off":
+            var offset = '-32';
             break;
-          case "state":
-            // Update the object with a front end defined state.
-            obj.text(states[command.data]);
+          case "heat":
+            var offset = '0';
             break;
-          case "bgoffset":
-            obj.css('background-position', command.xpos + 'px ' + command.ypos + 'px');
-          default:
-            alert("Unknown data type sent");
+          case "cool":
+            var offset = '-64';
             break;
         }
-        break;
-      default:
-        alert("unknown command type sent");
-        break;
+        mode_state.css('background-position', '0 ' + offset + 'px');
+      }
+    }
+
+    //check for a thermostat state event
+    if(therm_fan_state = /^THERM_FAN_STATE:(.*)/.exec(evt.data)) {
+      if (mode_fan = $('#fan_state')) {
+        var offset = '0';
+        if (therm_fan_state[1] == 'on') {
+          offset = '-32';
+        }
+        mode_fan.css('background-position', '0 ' + offset + 'px');
+      }
     }
   };
 

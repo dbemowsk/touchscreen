@@ -23,25 +23,33 @@ my %clicks = (
     my ( $json ) = @_;
     my $value = $$json->{'value'};
     therm_set_heat_setpoint($value);
+
     &::print_log("Changed heating setpoint to $value degrees");
+    sendUpdate("#hsp", "text", $value);
   },
   "csp" => sub {
     my ( $json ) = @_;
     my $value = $$json->{'value'};
     therm_set_cool_setpoint($value);
+
     &::print_log("Changed cooling setpoint to $value degrees");
+    sendUpdate("#csp", "text", $value);
   },
   "therm_mode" => sub {
     my ( $json ) = @_;
     my $value = $$json->{'value'};
     therm_set_mode($value);
+
     &::print_log("Changed furnace mode to $value");
+    sendUpdate("#mode_select_val", "state", $value);
   },
   "therm_fan" => sub {
     my ( $json ) = @_;
     my $value = $$json->{'value'};
-    therm_set_fan($value);
+    therm_set_fan_mode($value);
+
     &::print_log("Changed furnace fan to $value");
+    sendUpdate("#fan_select_val", "state", $value);
   }
 );
 
@@ -69,7 +77,8 @@ WebSocket::subscribe('click', \&TouchClick);
 # This is run on startup or reload. Tell everyone what happend.
 if ($Startup or $Reload) {
   &::print_log("notify all WebSockets we restarted");
-  WebSocket::SendToAll("RESTART");
+
+  sendMessage("RESTART");
 }
 
 # here we will handle thermostat changes that need to be sent to all sockets
@@ -81,11 +90,17 @@ if ($thermostat) {
   use vars qw($therm_last_fan);
   use vars qw($therm_last_state);
   use vars qw($therm_last_fan_state);
+  use vars qw($therm_last_heat_set);
+  use vars qw($therm_last_cool_set);
+  use vars qw($therm_last_inside_temp);
   
   my $therm_check_mode;
   my $therm_check_fan;
   my $therm_check_state;
   my $therm_check_fan_state;
+  my $therm_check_heat_set;
+  my $therm_check_cool_set;
+  my $therm_check_inside_temp;
   
   if ($Startup or $Reload) {
     $therm_last_mode = "unknown";
@@ -97,35 +112,103 @@ if ($thermostat) {
     $therm_check_fan = therm_get_fan_mode();
     $therm_check_state = therm_get_state();
     $therm_check_fan_state = therm_get_fan_state();
+    $therm_check_heat_set = therm_get_heat_setpoint();
+    $therm_check_cool_set = therm_get_cool_setpoint();
+    $therm_check_inside_temp = $thermostat->get_temp();
 
     # check if a mode change ocurred
     if ($therm_check_mode ne $therm_last_mode) {
       &::print_log("Notify all WebSockets that the thermostat mode has changed");
-      WebSocket::SendToAll("THERM_MODE:" . $therm_check_mode);
+
+      sendUpdate("#mode_select_val", "state", $therm_check_mode);
     }
     
     # check if a fan mode change ocurred 
     if ($therm_check_fan ne $therm_last_fan) {
       &::print_log("Notify all WebSockets that the thermostats fan mode has changed");
-      WebSocket::SendToAll("THERM_FAN:" . $therm_check_fan);
+
+      sendUpdate("#fan_select_val", "state", $therm_check_fan);
     }
 
     #check and update the HVAC system's heating and cooling state as it changes
-    if ($therm_last_state ne $therm_check_state) {
+    if ($therm_check_state ne $therm_last_state) {
       &::print_log("Notify all WebSockets that the HVAC system is now in a $therm_check_state state");
-      WebSocket::SendToAll("THERM_STATE:" . $therm_check_state);
+
+      sendOffset("#mode_state", "0", (($therm_check_state eq "heat") ? "0" : (($therm_check_state eq "off") ? "-32" : "-64")));
     }
 
     #Check and update the HVAC fan state as it changes
-    if ($therm_last_fan_state ne $therm_check_fan_state) {
+    if ($therm_check_fan_state ne $therm_last_fan_state) {
       &::print_log("Notify all WebSockets that the HVAC system's fan is now $therm_check_fan_state");
-      WebSocket::SendToAll("THERM_FAN_STATE:" . $therm_check_fan_state);
+
+      sendOffset("#fan_state", "0", (($therm_check_fan_state eq "off") ? "0" : "-32"));
     }
 
-    # save the last known modes and states
-    $therm_last_mode = $therm_check_mode;
-    $therm_last_fan = $therm_check_fan;
-    $therm_last_state = $therm_check_state;
-    $therm_last_fan_state = $therm_check_fan_state;
+    #Check and update the thermostat's heating setpoint
+    if ($therm_check_heat_set ne $therm_last_heat_set) {
+      &::print_log("Notify all WebSockets that the thermostat's heating setpoint is now $therm_check_heat_set");
+
+      sendUpdate("#hsp", "text", $therm_check_heat_set);
+    }
+
+    #Check and update the thermostat's cooling setpoint
+    if ($therm_check_cool_set ne $therm_last_cool_set) {
+      &::print_log("Notify all WebSockets that the thermostat's cooling_setpoint is now $therm_check_cool_set");
+
+      sendUpdate("#csp", "text", $therm_check_cool_set);
+    }
+
+    #Check and update the thermostat's temperature
+    if ($therm_check_inside_temp ne $therm_last_inside_temp) {
+      &::print_log("Notify all WebSockets that the thermostat's temperature is now $therm_check_inside_temp");
+
+      sendUpdate("#TempIndoor", "text", $therm_check_inside_temp);
+    }
+
+    # save the last known modes and states so we can test for change
+    $therm_last_mode        = $therm_check_mode;
+    $therm_last_fan         = $therm_check_fan;
+    $therm_last_state       = $therm_check_state;
+    $therm_last_fan_state   = $therm_check_fan_state;
+    $therm_last_heat_set    = $therm_check_heat_set;
+    $therm_last_cool_set    = $therm_check_cool_set;
+    $therm_last_inside_temp = $therm_check_inside_temp
   }
+}
+
+sub sendUpdate {
+  my ($id, $datatype, $data) = @_;
+
+  wsSend('type'     => "upd",
+         'id'       => $id,
+         'datatype' => $datatype,
+         'data'     => $data);
+}
+
+sub sendOffset {
+  my ($id, $xpos, $ypos) = @_;
+
+  wsSend('type'     => "upd",
+         'id'       => $id,
+         'datatype' => "bgoffset",
+         'xpos'     => $xpos,
+         'ypos'     => $ypos);
+}
+
+sub sendMessage {
+  my ($text) = @_;
+
+  wsSend('type' => "msg",
+         'text' => $text);
+}
+
+sub wsSend {
+  my (%wsData) = @_;
+  my $wsData = \%wsData;
+
+  my $json_text;
+  my $json = JSON->new->allow_nonref;
+
+  $json_text = $json->encode($wsData);
+  WebSocket::SendToAll($json_text);
 }

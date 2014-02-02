@@ -301,42 +301,22 @@ function updateWeather() {
 //******************************************************************************
 function SetWeatherImage(el,timeOfDay, value) {
   img = './images/weather/' + timeOfDay + '_' + value + '.png';
-  if (!imageExists(img)) {
-    img = './images/weather/' + value + '.png';
-  }
-
   el = $('#Conditions');
-  el.css('background-image', 'url(' + img + ')');
   el.css('background-size', '256px 256px');
   el.css('background-repeat', 'no-repeat');
   el.css('background-position', 'center 20px');
-}
 
-//******************************************************************************
-// This function checks to see if an image exists by attempting to load the 
-// image.  If the image loads, the return (rtn) value is set to true.  If an
-// error is encountered, the return value is set to false.
-//
-// @arg src - The image path and filename
-//
-// @return true on load or false on error
-//******************************************************************************
-function imageExists(src) {
-  var img = new Image();
-  var rtn = "";
-
-  img.onload = function() {
-    rtn = true;
-  };
-
-  img.onerror = function() {
-    rtn = false;
-  };
-
-  while(img == "") {
-    //wait for the image to load
-  }
-
-  img.src = src;
-  return rtn;
+  $.get(img).done(function(data) {
+    // Since MH will pass a "Missing Page" when the image is not found, check
+    // for that and load the alternate image if found.
+    if (data.match(/[/s/S]*<title>Missing Page<\/title>/i)) {
+      img = './images/weather/' + value + '.png';
+    }
+    el.css('background-image', 'url(' + img + ')');
+  }).fail(function() {
+    // If by chance we did get an actual 404 error that brings us here, process
+    // it as if it were a missing image and load the alternate.
+    img = './images/weather/' + value + '.png';
+    el.css('background-image', 'url(' + img + ')');
+  });
 }
