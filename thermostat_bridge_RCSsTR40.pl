@@ -48,6 +48,10 @@ sub therm_get_mode {
   return $thermostat->get_mode();
 }
 
+sub therm_get_temp {
+  return $thermostat->get_temp();
+}
+
 # This routine is to set the thermostats fan mode to 'on', or 'off'
 sub therm_set_fan {
   my ($state) = @_;

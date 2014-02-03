@@ -187,7 +187,7 @@ function formatAMPM() {
 //                no timeout is specified, the default is 20 seconds.
 //******************************************************************************
 function alert(msg, timeout) {
-  // Set the timeout value
+  // Set the timeout value.  Defaults to 20 seconds if not specified.
   timeout = timeout || 20000
   // Display the message
   $('#AlertMsg').html(msg);

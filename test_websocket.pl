@@ -114,7 +114,7 @@ if ($thermostat) {
     $therm_check_fan_state = therm_get_fan_state();
     $therm_check_heat_set = therm_get_heat_setpoint();
     $therm_check_cool_set = therm_get_cool_setpoint();
-    $therm_check_inside_temp = $thermostat->get_temp();
+    $therm_check_inside_temp = therm->get_temp();
 
     # check if a mode change ocurred
     if ($therm_check_mode ne $therm_last_mode) {

@@ -135,7 +135,7 @@ a {
 }
 .highlighted {
   /* This creates a shadowed full border to make the text stand out better over images */
-  text-shadow: -3px -3px 2px #444, 3px -3px 2px #444, 3px 3px 2px #444, -3px 3px 2px #444;
+  text-shadow: -3px -3px 2px #888, 3px -3px 2px #888, 3px 3px 2px #888, -3px 3px 2px #888;
 }
 .section_wrapper {
   margin: 8px;
