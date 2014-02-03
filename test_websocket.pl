@@ -84,7 +84,7 @@ if ($Startup or $Reload) {
 # here we will handle thermostat changes that need to be sent to all sockets
 
 # Only perform these operations if the thermostat object is initialized
-if ($thermostat) {
+if (defined $thermostat) {
   # mode changes
   use vars qw($therm_last_mode);
   use vars qw($therm_last_fan);
