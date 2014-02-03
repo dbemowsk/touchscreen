@@ -291,9 +291,11 @@ function initWebSocket()
             obj.text(states[command.data]);
             break;
           case "bgoffset":
+            // Update the object's background image position
             obj.css('background-position', command.xpos + 'px ' + command.ypos + 'px');
+            break;
           default:
-            alert("Unknown data type sent");
+            alert("Unknown data type '" + command.datatype + "'");
             break;
         }
         break;
