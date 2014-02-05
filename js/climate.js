@@ -233,14 +233,31 @@ function updateWeather() {
 
   var out = '';
   var cloudImg = "";
+  var uom_temp, uom_wind, uom_rain, uom_baro, disp_heat_index;
+
+  url = './sub?json(config_parms)';
+
+  $.getJSON(url, function (data) {
+    // Get the temperature unit of measure (F)arenheit or (C)elsius
+    uom_temp = data.config_parms.weather_uom_temp;
+
+    // Get the wind unit of measure
+    uom_wind = data.config_parms.weather_uom_wind;
+
+    // Get the rain unit of measure
+    uom_rain = data.config_parms.weather_uom_rain;
+
+    // Get the barometer unit of measure
+    uom_baro = data.config_parms.weather_uom_baro;
+
+    // Check if we should display the heat index
+    disp_heat_index = data.config_parms.weather_use_heatindex
+  });
 
   url = './sub?json(weather)';
 
   //get the weather data
   $.getJSON(url, function (data) {
-    //we will get the US (F) or metric (C) value from the Summary_Short 
-    var fc = data.Weather.Summary_Short.match(/^-?\d*\.?\d*?deg\;(F|C)/)[1];
-
     //We should not use the "Clouds" value if we have a "Condition" value set
     var conditionIsSet = false;
 
@@ -252,8 +269,15 @@ function updateWeather() {
       if (el.length > 0) {
         value = (value == "null") ? "?" : value;
         if (key.match(/^Temp/) || key.match(/^WindChill$/)) {
-          el.html(value + " &deg;" + fc);
-          el.css('color', Temp2RGB(value, fc));
+          el.html(value + " &deg;" + uom_temp);
+          el.css('color', Temp2RGB(value, uom_temp));
+          if (key.match(/^WindChill$/)) {
+            if ((value < 40 && uom_temp == "F") || (value < 5 && uom_temp == "C")) {
+              $('#WindChillData').removeClass('hidden');
+            } else {
+              $('#HeatIndexData').removeClass('hidden');
+            }
+          }
         } else if (key.match(/^Conditions$/)) {
           //if the returned condition text contains spaces, replace them with underscores
           value = value.replace(/ /, "_");
@@ -268,8 +292,10 @@ function updateWeather() {
           el.html(value + " %");
           // Now show the block
           $('#HumidIn').removeClass('hidden');
-        } else if (key.match(/^BaromSea$/)) {
-          el.html(value + " inches and " + data.Weather.BaromDelta);
+        } else if (key.match(/^Barom.*/)) {
+          el.html(value + " " + uom_baro + " and " + data.Weather.BaromDelta);
+        } else if (key.match(/^WindDirection$/) && data.Weather.WindDirection != "no wind") {
+          el.html(value + " at " + data.Weather.WindAvgSpeed + " " + uom_wind);
         } else {
           el.html(value);
         }
